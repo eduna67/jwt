@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "jwt1",
+            "name": "jwt",
             "type": "dart",
             "request": "launch",
-            "program": "bin/jwt1.dart"
+            "program": "bin/jwt.dart"
         },
     ]
 }
