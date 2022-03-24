@@ -82,4 +82,5 @@ String _gerandoWJT() {
   //print("$header64.$payload64.$sign");
   developer.log('$header64.$payload64.$sign', name: 'Meu log:');
   return '$header64.$payload64.$sign';
+  
 }
