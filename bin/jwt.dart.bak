@@ -3,22 +3,13 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'dart:developer' as developer;
 
-    String secret = 'totalsoft';
 main() async {
-  //InternetAddress.loopbackIPv4
   var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
   server.listen((event) async {
     if (event.uri.path == '/login') {
-      event.response.statusCode = HttpStatus.ok;
-      event.response.headers.contentType =
-          ContentType.parse('application/json');
       event.response.write(_gerandoWJT());
     } else if (event.uri.path == '/teste') {
-      if (_testeToken(event)) {
-        event.response.write("Seja bem vindo");
-      } else {
-        event.response.write("Acesso negado");
-      }
+      event.response.write("teste");
     } else {
       event.response.statusCode = HttpStatus.notFound;
       event.response.write("Pagina não encontrada.");
@@ -53,40 +44,11 @@ main() async {
   });
 }
 
-bool _testeToken(HttpRequest event) {
-  var body = event.headers["Authorization"];
-  if (body == null) {
-    return false;
-  } else {
-    var token = body[0].split(" ")[1];
-    var tokens = token.split(".");
-    String header64 = tokens[0];
-    String payload64 = tokens[1];
-    String signature64 = tokens[2];
-
-    var hearderJson = jsonDecode(utf8.decode(base64Decode(header64)));
-    var payloadJson = jsonDecode(utf8.decode(base64Decode(payload64)));
-    var signatureJson = base64Decode(utf8.decode(base64Decode(signature64)));
-
-
-  var hmac = Hmac(sha256, secret.codeUnits);
-  var signTMP = hmac.convert('$header64.$payload64'.codeUnits);
-  String signGlobal = base64.encode(signTMP.bytes);
-    //event.response.write(token);
-
-    return signGlobal == signature64;
-  }
-  //?[0].split(" ")[1];
-  //var token = body.split(" ")[1];
-  //return true;
-}
-
 String _gerandoWJT() {
   // Montando o JSON do header do JWT
   var header = {"alg": "HS256", "typ": "JWT"};
   String header64 = base64.encode(jsonEncode(header).codeUnits);
   //print(header64);
-  developer.log('Token com o header $header64', name: 'Meu log:');
 
   // Informações publicas do cliente não utilizar dados secretos.
   // idUsurio, nome, email, data de expiração do cliente por exemplo
@@ -113,6 +75,7 @@ String _gerandoWJT() {
   // Manter em uma variavel de ambiente.
 
   // Assinatura do JWT
+  var secret = 'totalsoft';
   var hmac = Hmac(sha256, secret.codeUnits);
   var signTMP = hmac.convert('$header64.$payload64'.codeUnits);
   String sign = base64.encode(signTMP.bytes);
